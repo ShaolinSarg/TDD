@@ -2,4 +2,5 @@
 
 (defn create-session [start-time]
   "Initialises a session for a period of TDD development"
-  {:session-id 300})
+  {:session-id 300
+   :snapshots nil})

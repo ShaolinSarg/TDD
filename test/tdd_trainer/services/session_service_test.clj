@@ -6,4 +6,6 @@
 (deftest session-service-tests
   (testing "create-session should"
     (testing "return a session id"
-      (is (= 300 (:session-id (sut/create-session "2018-07-05 03:03:04")))))))
+      (is (= 300 (:session-id (sut/create-session "2018-07-05 03:03:04")))))
+    (testing "return an empty snapshot sequence"
+      (is (nil? (:snapshots (sut/create-session "2018-07-05 03:03:04")))))))
