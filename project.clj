@@ -14,7 +14,8 @@
                  [ring/ring-json "0.4.0"]
                  [com.taoensso/timbre "4.10.0"]
                  [metrics-clojure "2.10.0"]
-                 [metrics-clojure-ring "2.10.0"]]
+                 [metrics-clojure-ring "2.10.0"]
+                 [clj-time "0.14.4"]]
 
   :main ^:skip-aot tdd-trainer.core
 
