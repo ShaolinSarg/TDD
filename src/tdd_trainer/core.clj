@@ -17,6 +17,6 @@
 (defn -main
   "Starts the TDD Trainer server"
   [& args]
-  (let [port 8080]
+  (let [port (Integer/parseInt (or (System/getenv "PORT") "8080")) pfdock]
     (info (str "Starting Server on port:" port " ..."))
     (reset! server (run-server #'site {:port port})))) 
