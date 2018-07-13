@@ -3,19 +3,7 @@
             [ring.util.response :refer [content-type created status response]]
             [taoensso.timbre :refer [debug info]]
             [tdd-trainer.services.session :as service]
-            [clj-time.format :as f]))
-
-
-(def json-datetime-formatter (f/formatters :mysql))
-
-
-(defn validate-time [t]
-  (try
-    (f/parse json-datetime-formatter t)
-
-    (catch Exception e
-      (info (str "Invalid start time: " t))
-      nil)))
+            [tdd-trainer.validators.core :refer [validate-time]]))
 
 
 (defn- create-session [start-time]
