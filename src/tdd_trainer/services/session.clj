@@ -1,6 +1,10 @@
-(ns tdd-trainer.services.session)
+(ns tdd-trainer.services.session
+  (:require [tdd-trainer.data :as data]))
 
 (defn create-session [start-time]
   "Initialises a session for a period of TDD development"
-  {:session-id 300
-   :snapshots nil})
+  (let [initial-session {:session-id 300
+           :snapshots nil}]
+
+    (data/add-session! initial-session)
+    initial-session))
