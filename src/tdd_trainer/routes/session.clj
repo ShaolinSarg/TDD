@@ -21,4 +21,12 @@
   (POST "/session" request (let [t (get-in request [:body "timestamp"])]
                                (info (str "time is :" t))
                                (info (str "request is :" request))
-                               (create-session t))))
+                               (create-session t)))
+
+  (POST "/session/:id/snapshot" request {:status 299 :body "blam"})
+  ;; "timestamp"
+  ;; "failingTestCount"
+  ;; "failingTestNames"
+
+  (GET "/session/:id/stats" request {:status 299 :body "blam"}))
+
