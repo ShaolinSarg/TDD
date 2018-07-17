@@ -8,3 +8,8 @@
 
     (data/add-session! initial-session)
     initial-session))
+
+(defn add-snapshot [session-id snapshot]
+  (data/add-snapshot! session-id snapshot))
+
+
