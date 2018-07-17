@@ -23,7 +23,14 @@
         (with-redefs-fn {#'tdd-trainer.services.session/create-session (fn [t] {:session-id 400})}
           #(is (= "http://localhost/session/400" (get-in (sut/site (-> (mock/request :post "/session")
                                                        (mock/json-body {:timestamp "2018-04-05 23:54:52"})))
-                                         [:headers "Location"])))))))
+                                                         [:headers "Location"]))))))
+
+    (testing "POST /session/:id/snapshots"
+      (testing "returns the correct status"
+        (is (= 201 (:status (sut/site (-> (mock/request :post "/session/300/snapshots")
+                                          (mock/json-body {:timestamp "2018-04-05 23:54:52"
+                                                           :failingTestCount 0
+                                                           :failingTestNames []})))))))))
 
   (testing "endpoints should return a bad request response"
     (testing "POST /session"
