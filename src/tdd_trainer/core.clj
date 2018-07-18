@@ -5,7 +5,7 @@
             [taoensso.timbre :refer [debug info]]))
 
 
-(defonce server (atom nil))
+(def server (atom nil))
 
 
 (defn stop-server []

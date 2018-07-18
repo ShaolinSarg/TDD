@@ -1,4 +1,4 @@
-(ns tdd-trainer.routes.session-test
+(ns tdd-trainer.routes.session-routes-test
   (:require [tdd-trainer.routes.core :as sut]
             [clojure.test :refer [deftest testing is]]
             [ring.mock.request :as mock]
@@ -27,10 +27,19 @@
 
     (testing "POST /session/:id/snapshots"
       (testing "returns the correct status"
-        (is (= 201 (:status (sut/site (-> (mock/request :post "/session/300/snapshots")
-                                          (mock/json-body {:timestamp "2018-04-05 23:54:52"
-                                                           :failingTestCount 0
-                                                           :failingTestNames []})))))))))
+        (with-redefs-fn {#'tdd-trainer.services.session/add-snapshot (fn [session-id snapshot] {:session-id 400})}
+          #(is (= 201 (:status (sut/site (-> (mock/request :post "/session/300/snapshots")
+                                             (mock/json-body {:timestamp "2018-04-05 23:54:52"
+                                                              :failingTestCount 0
+                                                              :failingTestNames []}))))))))
+
+      (testing "returns not found"
+        (testing "when the session id does not exist"
+          (with-redefs-fn {#'tdd-trainer.services.session/add-snapshot (fn [session-id snapshot] nil)}
+            #(is (= 404 (:status (sut/site (-> (mock/request :post "/session/200/snapshots")
+                                               (mock/json-body {:timestamp "2018-04-05 23:54:52"
+                                                                :failingTestCount 0
+                                                                :failingTestNames []})))))))))))
 
   (testing "endpoints should return a bad request response"
     (testing "POST /session"
@@ -45,3 +54,5 @@
   (testing "return a dateTime for a valid time"
     (is (= (t/date-time 2018 3 5 13 34 45)
            (tdd-trainer.validators.core/validate-time "2018-03-05 13:34:45")))))
+
+      
