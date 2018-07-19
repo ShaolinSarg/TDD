@@ -3,7 +3,10 @@
             [ring.util.response :refer [content-type created status response]]
             [taoensso.timbre :refer [debug info warn]]
             [tdd-trainer.services.session :as service]
-            [tdd-trainer.validators.core :refer [validate-time]]))
+            [tdd-trainer.validators.core :refer [validate-time]]
+            [cheshire.core :refer [generate-string]]
+            [cheshire.generate :refer [add-encoder encode-str]]))
+
 
 (defn- create-session [start-time]
   (do
@@ -13,29 +16,49 @@
             session-id (:session-id initial-session)]
 
         (info (str "created session: " session-id))
-        (-> (created (str "/session/" session-id))
+        (-> (created (str "/sessions/" session-id))
             (content-type "application/json")))
 
       (do
         (warn (str "could not create session"))
         (status (response "bad time") 400)))))
 
+
 (defn- add-snapshot [session-id snapshot]
   (do
     (info (str "calling add snapshot service for session: " session-id))
-    (if-let [resp (service/add-snapshot session-id snapshot)]
-      (created (str "/session/" session-id "/snapshots"))
+    (if-let [resp (service/add-snapshot (Integer/parseInt session-id) snapshot)]
+      (created (str "/sessions/" session-id "/snapshots"))
       (do
         (info "could not add snapshot")
         (status (response "no session found") 404)))))
 
 
+(defn- get-session-by-id [id]
+  (do
+    (info (str "calling get session data for session: " id))
+    (-> (service/get-session (Integer/parseInt id))
+        generate-string
+        response
+        (content-type "application/json"))))
+
+(add-encoder org.joda.time.DateTime encode-str)
+
+
 (defroutes session-routes
-  (POST "/session" request (let [t (get-in request [:body "timestamp"])]
+  (POST "/sessions" request (let [t (get-in request [:body "timestamp"])]
                              (create-session t)))
 
-  (POST "/session/:id/snapshots" request (let [id (get-in request [:route-params :id])]
-                                           (add-snapshot id {})))
+  (POST "/sessions/:id/snapshots" request (let [id (get-in request [:route-params :id])
+                                               timestamp (get-in request [:body "timestamp"])
+                                               failingTestCount (get-in request [:body "failingTestCount"])
+                                               failingTestNames (get-in request [:body "failingTestNames"])]
 
-  (GET "/session/:id/stats" request {:status 299 :body "blam"}))
+                                           (add-snapshot id {:timestamp timestamp
+                                                             :failing-test-count failingTestCount
+                                                             :failing-test-names failingTestNames})))
+
+  (GET "/sessions/:id" [id] (get-session-by-id id))
+
+  (GET "/sessions/:id/stats" request {:status 299 :body "blam"}))
 

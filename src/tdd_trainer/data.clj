@@ -1,4 +1,5 @@
-(ns tdd-trainer.data)
+(ns tdd-trainer.data
+  (:require [taoensso.timbre :refer [debug info warn]]))
 
 ;; {:session-id 300
 ;;  :snapshots [{:snapshot-timestamp "2018-07-04 12:20:30"
@@ -18,3 +19,6 @@
   (if (contains? @session-data session-id)
     (swap! session-data update-in [session-id :snapshots] conj snapshot)
     nil))
+
+(defn get-session-data [session-id]
+  (get @session-data session-id :not-found))

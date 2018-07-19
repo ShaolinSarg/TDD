@@ -35,6 +35,7 @@
         (sut/add-session! initial-session)
         (is (= 0 (count (get-in @sut/session-data [200 :snapshots]))))
         (sut/add-snapshot! 200 snapshot)
-        (is (= 1 (count (get-in @sut/session-data [200 :snapshots]))))))
+        (is (= 1 (count (get-in @sut/session-data [200 :snapshots]))))
+        (is (= snapshot (first (get-in @sut/session-data [200 :snapshots]))))))
     (testing "should return nil if the session-id does not exist"
       (is (nil? (sut/add-snapshot! 999 snapshot))))))
