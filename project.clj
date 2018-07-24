@@ -16,7 +16,9 @@
                  [metrics-clojure "2.10.0"]
                  [metrics-clojure-ring "2.10.0"]
                  [cheshire "5.8.0"]
-                 [clj-time "0.14.4"]]
+                 [clj-time "0.14.4"]
+                 [hawk "0.2.11"]
+                 [metrics-clojure-graphite "2.10.0"]]
 
   :main ^:skip-aot tdd-trainer.core
 

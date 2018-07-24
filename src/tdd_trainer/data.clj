@@ -16,9 +16,8 @@
 
 
 (defn add-snapshot! [session-id snapshot]
-  (if (contains? @session-data session-id)
-    (swap! session-data update-in [session-id :snapshots] conj snapshot)
-    nil))
+  (when(contains? @session-data session-id)
+    (swap! session-data update-in [session-id :snapshots] conj snapshot)))
 
 (defn get-session-data [session-id]
-  (get @session-data session-id :not-found))
+  (get @session-data session-id))

@@ -19,4 +19,5 @@
   [& args]
   (let [port (Integer/parseInt (or (System/getenv "PORT") "8080"))]
     (info (str "Starting Server on port:" port " ..."))
-    (reset! server (run-server #'site {:port port})))) 
+    (reset! server
+            (run-server #'site {:port port}))))

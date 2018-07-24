@@ -7,7 +7,6 @@
             [cheshire.core :refer [generate-string]]
             [cheshire.generate :refer [add-encoder encode-str]]))
 
-
 (defn- create-session [start-time]
   (do
     (info "calling add session service")
@@ -16,13 +15,13 @@
             session-id (:session-id initial-session)]
 
         (info (str "created session: " session-id))
-        (-> (created (str "/sessions/" session-id))
-            (content-type "application/json")))
+        (content-type
+         (created (str "/sessions/" session-id))
+         "application/json"))
 
       (do
         (warn (str "could not create session"))
         (status (response "bad time") 400)))))
-
 
 (defn- add-snapshot [session-id snapshot]
   (do
@@ -32,7 +31,6 @@
       (do
         (info "could not add snapshot")
         (status (response "no session found") 404)))))
-
 
 (defn- get-session-by-id [id]
   (do
@@ -44,19 +42,18 @@
 
 (add-encoder org.joda.time.DateTime encode-str)
 
-
 (defroutes session-routes
   (POST "/sessions" request (let [t (get-in request [:body "timestamp"])]
-                             (create-session t)))
+                              (create-session t)))
 
   (POST "/sessions/:id/snapshots" request (let [id (get-in request [:route-params :id])
-                                               timestamp (get-in request [:body "timestamp"])
-                                               failingTestCount (get-in request [:body "failingTestCount"])
-                                               failingTestNames (get-in request [:body "failingTestNames"])]
+                                                timestamp (get-in request [:body "timestamp"])
+                                                failingTestCount (get-in request [:body "failingTestCount"])
+                                                failingTestNames (get-in request [:body "failingTestNames"])]
 
-                                           (add-snapshot id {:timestamp timestamp
-                                                             :failing-test-count failingTestCount
-                                                             :failing-test-names failingTestNames})))
+                                            (add-snapshot id {:timestamp timestamp
+                                                              :failing-test-count failingTestCount
+                                                              :failing-test-names failingTestNames})))
 
   (GET "/sessions/:id" [id] (get-session-by-id id))
 
