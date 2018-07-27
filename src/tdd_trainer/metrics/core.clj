@@ -15,6 +15,7 @@
 (def metric-registry (new-registry))
 
 (defhistogram metric-registry failing-test-count)
+(defhistogram metric-registry save-gap)
 
 ;; (graphite/start graphite-metrics-reporter 10)
 

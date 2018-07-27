@@ -1,9 +1,9 @@
 (ns tdd-trainer.services.session
-  (:require [tdd-trainer.data :as data]
-            [taoensso.timbre :refer [debug info warn]]
-            [tdd-trainer.metrics.core :refer [failing-test-count]]
+  (:require [clj-time.core :as t]
             [metrics.histograms :as histogram]
-            [clj-time.core :as t]))
+            [taoensso.timbre :refer [debug info]]
+            [tdd-trainer.data :as data]
+            [tdd-trainer.metrics.core :refer [failing-test-count save-gap]]))
 
 (defn diff-times
   [start end]
@@ -42,6 +42,7 @@
 
       (info (str "adding snapshot to session: " session-id))
       (histogram/update! failing-test-count (:failing-test-count updated-snapshot))
+      (histogram/update! save-gap time-gap)
       (data/add-snapshot! session-id updated-snapshot)))) 
 
 
